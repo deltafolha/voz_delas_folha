@@ -1,0 +1,25 @@
+<!doctype html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="main_box">
+        <div id="logo">
+            <a href="{{ url_for('main') }}"><img alt="logo" src="{{ url_for('static', filename='img/logo.svg') }}"></a>
+        </div>
+        <div id="search_box">
+            <form method="post" action="{{ url_for('main') }}">
+                <label for="search_input">INCLUA ATÉ DEZ PALAVRAS SEPARADAS POR VÍRGULAS</label><br>
+                <input type="text" id="search_input" name="search_input"><br>
+                > BUSCAR PALAVRAS EM:
+                <input type="checkbox" id="tags" name="tags" value="tags_checked" checked>
+                <label for="tags">TAGS</label>
+                <input type="checkbox" id="topics" name="topics" value="topics_checked" checked>
+                <label for="topics">TÓPICOS</label>
+                <br><br><br>
+                <input type="submit" value="PESQUISAR">
+            </form>
+        </div>
+    </div>
+</body>

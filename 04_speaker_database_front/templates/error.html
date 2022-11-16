@@ -1,0 +1,11 @@
+<!doctype html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="error_message_box">
+        <h1>ERRO // {{error_message}}</h1>
+        <a href="{{ url_for('main') }}"><button>VOLTAR</button></a>
+    </div>
+</body>

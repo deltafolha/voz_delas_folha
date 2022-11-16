@@ -1,0 +1,40 @@
+<!doctype html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="result_box">
+        <h1 id="result_title">RESULTADO // <a href="{{ url_for('main') }}">FAZER NOVA CONSULTA</a></h1>
+        <br>
+        <ul>
+        {% if result|length == 0 %}
+            <p>NENHUM RESULTADO PARA A PESQUISA</p>
+        {% else %}
+            <p>[EXIBINDO {{result|length}} RESULTADOS]</p><br>
+            {% for document in result %}
+            <li>
+                {% set document_dict = document.to_dict() %}
+                <p class="speaker_name">{{document_dict["speaker"].upper()}}</p>
+                <p class="speaker_info_title">APARECE NAS EDITORIAS:</p>
+                {% for channel in document_dict["channels"] %}
+                    <p>{{channel}}</p>
+                {% endfor %}
+                <p class="speaker_info_title">APARECE NOS TEXTOS:</p>
+                {% for article in document_dict["articles"] %}
+                    <p>[{{article["publication_datetime"]}}] <a href={{article["url"]}}>{{article["title"]}}</a></p>
+                {% endfor %}
+                <p class="speaker_info_title">VINCULADA ÀS TAGS:</p>
+                {% for tag in document_dict["tags"] %}
+                    <p>{{tag}}</p>
+                {% endfor %}
+                <p class="speaker_info_title">VINCULADA AOS TÓPICOS:</p>
+                {% for topic in document_dict["topics"] %}
+                    <p>{{topic}}</p>
+                {% endfor %}
+            </li>
+            {% endfor %}
+        {% endif %}
+        </ul>
+    </div>
+</body>
