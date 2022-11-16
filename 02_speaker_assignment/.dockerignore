@@ -1,0 +1,26 @@
+# docker stuff
+Dockerfile
+.dockerignore
+
+# vscode stuff
+.vscode/
+
+# git & github stuff
+.git
+.gitignore
+*.md
+
+# python stuff
+*.pyc
+*.pyo
+*.pyd
+.Python
+__pycache__/
+
+# environments
+venv/
+.env
+.venv
+
+# osx stuff
+.DS_Store
