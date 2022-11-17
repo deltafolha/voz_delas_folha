@@ -26,35 +26,15 @@ Todo o conteúdo está sob a licença [GNU General Public License v3.0](/LICENSE
 
 O Voz Delas foi montado usando uma arquitetura de microsserviços, organizados na pasta [./system](./system). Cada subpasta é um serviço.
 
-O sistema foi implementado originalmente na [Google Cloud Platform](https://cloud.google.com/), por isso as pastas fazem referência aos serviços Cloud Function (_cf_) e Cloud Run (_cr_).
+O sistema foi implementado originalmente na [Google Cloud Platform](https://cloud.google.com/).
 
-### [./system](./system)
-
-#### [./system/cf_data_warehouse_verification](./system/cf_data_warehouse_verification)
-
-Cloud function responsável por verificar se os dados diários foram devidamente enriquecidos e enviados ao Data Warehouse. Se os dados no banco não condizem com os que foram recebidos para análise, dispara alerta por email.
-
-#### [./system/cf_error_notification](./system/cf_error_notification)
-
-Aplicação responsável por mandar email notificando existência de erro em algum dos outros sistemas do Voz Delas.
-
-#### [./system/cr_data_transformation](./system/cr_data_transformation)
+### [./01_data_transformation](./01_data_transformation )
 
 Recebe dados enviados diariamente ao bucket do Voz Delas contendo _.json_ com os textos publicados pela **Folha** nos dias anteriores.
 
-Envia os textos para a [API CR Speaker Assignment](./system/cr_speaker_assignment/) para identificar as fontes e atualiza o [banco de fontes](./system/cr_speaker_database/).
+Envia os textos para a [API Speaker Assignment](./02_speaker_assignment/) para identificar as fontes e atualiza o [banco de fontes](./03_speaker_database/).
 
-#### [./system/cr_report_dashboard](./system/cr_report_management_front)
-
-Frontend para visualizar os dados do Data Warehouse do projeto, como estatísticas de citações feitas a mulheres e outras informações extraídas de [./system/cr_speaker_assignment](./system/cr_speaker_assignment).
-
-#### [./system/cr_report_notification](./system/cr_report_notification)
-
-Gera os relatórios e alertas a serem enviados por email para repórteres, editores e para a chefia do jornal.
-
-Inclui relatórios periódicos de desempenho em relação à proporção de mulheres citadas nos textos e alertas para o caso de um acúmulo de textos publicados sem citar uma mulher.
-
-#### [./system/cr_speaker_assignment/](./system/cr_speaker_assignment/)
+### [./02_speaker_assignment](./02_speaker_assignment)
 
 API que determina quem são as fontes (_speakers_) em citações diretas de um texto.
 
@@ -62,23 +42,33 @@ O input é um corpo de texto. A saída é um array com as fontes, respectivos g�
 
 Quando a aplicação não identifica speakers ou gêneros, retorna a palavra "undefined".
 
-#### [./system/cr_speaker_database](./system/cr_speaker_database)
+### [./03_speaker_database](./03_speaker_database)
 
 Aplicação web para consumir dados do banco de fontes criado a partir da leitura dos textos. Nomes de _speakers_ mulheres são extraídos e integram tabela com tags de textos em que apareceram (ou seja, os assuntos sobre os quais falaram).
 
-#### [./system/cr_speaker_database_front](./system/cr_speaker_database_front)
+### [./04_speaker_database_front](./04_speaker_database_front)
 
-Frontend da aplicação web criada em [./system/cr_speaker_database](./system/cr_speaker_database).
+Frontend da aplicação web criada em [./03_speaker_database](./03_speaker_database).
+
+### [./05_report_dashboard](./05_report_management_front)
+
+Frontend para visualizar os dados do Data Warehouse do projeto, como estatísticas de citações feitas a mulheres e outras informações extraídas de [./02_speaker_assignment](./02_speaker_assignment).
+
+### [./06_report_notification](./06_report_notification)
+
+Gera os relatórios e alertas a serem enviados por email para repórteres, editores e para a chefia do jornal.
+
+Inclui relatórios periódicos de desempenho em relação à proporção de mulheres citadas nos textos e alertas para o caso de um acúmulo de textos publicados sem citar uma mulher.
 
 ## Detalhes
 
-O coração do projeto é o algoritmo disposto nos arquivos [./cr_speaker_assignment/text_analysis.py](./cr_speaker_assignment/text_analysis.py) e [./cr_speaker_assignment/speaker_assignment.py](./cr_speaker_assignment/speaker_assignment.py) (veja abaixo mais detalhes sobre outras partes da estrutura e, na sequência, como funciona o algoritmo).
+O coração do projeto é o algoritmo disposto nos arquivos [./02_speaker_assignment/text_analysis.py](./02_speaker_assignment/text_analysis.py) e [./02_speaker_assignment/speaker_assignment.py](./02_speaker_assignment/speaker_assignment.py) (veja abaixo mais detalhes sobre outras partes da estrutura e, na sequência, como funciona o algoritmo).
 
-Esses arquivos são usados em uma API ([./cr_speaker_assignment/main.py](./cr_speaker_assignment/main.py)) que recebe os arquivos de texto e retorna um _array_ com as informações de citações extraídas, entidades a quem atribuiu e o gênero dessa entidade.
+Esses arquivos são usados em uma API ([./02_speaker_assignment/main.py](./02_speaker_assignment/main.py)) que recebe os arquivos de texto e retorna um _array_ com as informações de citações extraídas, entidades a quem atribuiu e o gênero dessa entidade.
 
 Quando a aplicação não identifica speakers ou gêneros, retorna a palavra "undefined".
 
-[No Voz Delas, a API](./system/cr_speaker_assignment/) integra nossa arquitetura de microsserviços.
+[No Voz Delas, a API](./02_speaker_assignment/) integra nossa arquitetura de microsserviços.
 
 Os textos recebidos pelo sistema têm um tratamento inicial antes de serem processados pelo algoritmo do Voz Delas, parte que parcialmente se aplica exclusivamente ao formato usado pela **Folha** (extrair o conteúdo de um _.json_ específico, que contém também metadados), e outra parte aplicável a qualquer texto que passe pelo serviço. Isso inclui a remoção de alguns caracteres especiais, espaços múltiplos, bem como a checagem de que o texto enviado inclui um número par de aspas.
 
